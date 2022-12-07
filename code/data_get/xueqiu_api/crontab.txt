@@ -1,0 +1,2 @@
+*/1 * * * * cd /root/program_trading/code && /root/anaconda3/bin/python get_xueqiu_api_1m.py >> ../data/xueqiu_1m_log/crontab.log 2>&1
+0 8 * * * cd /root/program_trading/code && /root/anaconda3/bin/python get_tiger_api_1m.py >> ../data/tiger_1m_log/crontab.log 2>&1
