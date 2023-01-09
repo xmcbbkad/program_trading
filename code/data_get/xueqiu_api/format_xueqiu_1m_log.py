@@ -30,33 +30,33 @@ def get_dir_result(dir_name, code, filter, output_dir):
                     for item in json_obj.get('data',{}).get("item",[]):
                         if item[0] in timestamp_dict:
                             continue
-                        time_string = datetime.datetime.fromtimestamp(int(item[0]/1000), pytz.timezone('America/New_York')).strftime('%Y-%m-%d %H:%M:%S')
-                        data = "{}\t{}\t{}\t{}\t{}\t{}\t{}".format(time_string, int(item[0]/1000), item[2], item[3], item[4], item[5], item[1]) # time,open,high,low,close,volume
+                        time_string = datetime.datetime.fromtimestamp(int(item[0]/1000), pytz.timezone('America/New_York')).strftime('%Y-%m-%d %H:%M:%S GMT%z')
+                        data = "{}\t{}\t{}\t{}\t{}\t{}\t{}".format(int(item[0]), time_string, item[2], item[3], item[4], item[5], item[1]) # time,open,high,low,close,volume
                         output_list.append(data)     
                         timestamp_dict[item[0]] = 1                    
                 except Exception as e:
                    print("line error")
     output_list = sorted(list(set(output_list)))
     
-    with open(output_dir+code+"_tmp", 'w') as f:
-        for item in output_list:
-            ts = int(item.split('\t')[1])
-            tz = pytz.timezone('America/New_York')
-            dt = pytz.datetime.datetime.fromtimestamp(ts, tz)
-            dt = dt.strftime('%Y-%m-%d')
-            f.write(item+'\n')
+    #with open(output_dir+code+"_tmp", 'w') as f:
+    #    for item in output_list:
+    #        ts = int(item.split('\t')[1])
+    #        tz = pytz.timezone('America/New_York')
+    #        dt = pytz.datetime.datetime.fromtimestamp(ts, tz)
+    #        dt = dt.strftime('%Y-%m-%d')
+    #        f.write(item+'\n')
     
     last_dt = 0
     f_out = None
     for item in output_list:
-        ts = int(item.split('\t')[1])
+        ts = int(item.split('\t')[0])/1000
         tz = pytz.timezone('America/New_York')
         dt = pytz.datetime.datetime.fromtimestamp(ts, tz)
         dt = dt.strftime('%Y-%m-%d')
         if dt != last_dt:
             if last_dt: 
                 f_out.close()
-            f_out = open(output_dir+dt+'_'+code, 'w')
+            f_out = open(output_dir+dt, 'w')
             f_out.write(item+'\n')
         else:
             f_out.write(item+'\n')
